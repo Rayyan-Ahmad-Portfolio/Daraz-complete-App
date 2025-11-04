@@ -1,0 +1,87 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8" />
+    <title>Welcome to Daraz Admin</title>
+    <style>
+      body {
+        font-family: 'Segoe UI', Arial, sans-serif;
+        background-color: #f8f9fa;
+        color: #333;
+        margin: 0;
+        padding: 0;
+      }
+      .email-wrapper {
+        width: 100%;
+        padding: 40px 0;
+        background-color: #f8f9fa;
+      }
+      .email-container {
+        max-width: 600px;
+        margin: 0 auto;
+        background: #ffffff;
+        border-radius: 10px;
+        box-shadow: 0 2px 10px rgba(0,0,0,0.08);
+        overflow: hidden;
+      }
+      .header {
+        background-color: #ff6f00;
+        color: #fff;
+        text-align: center;
+        padding: 20px;
+      }
+      .header h1 {
+        margin: 0;
+        font-size: 22px;
+        letter-spacing: 1px;
+      }
+      .content {
+        padding: 30px;
+        text-align: center;
+      }
+      .content h2 {
+        color: #333;
+      }
+      .content p {
+        font-size: 15px;
+        line-height: 1.6;
+        color: #555;
+      }
+      .btn {
+        display: inline-block;
+        margin-top: 20px;
+        padding: 12px 24px;
+        background-color: #ff6f00;
+        color: white;
+        border-radius: 6px;
+        text-decoration: none;
+        font-weight: bold;
+      }
+      .footer {
+        background-color: #fafafa;
+        padding: 15px;
+        text-align: center;
+        font-size: 13px;
+        color: #999;
+      }
+    </style>
+  </head>
+  <body>
+    <div class="email-wrapper">
+      <div class="email-container">
+        <div class="header">
+          <h1>Welcome to Daraz</h1>
+        </div>
+        <div class="content">
+          <h2>🎉 Hello, <%= username %>!</h2>
+          <p>Your account (<b><%= email %></b>) has been successfully created.</p>
+          <p>You can now log in to your admin dashboard and start managing your portal.</p>
+          <a href="" class="btn">Go to Dashboard</a>
+        </div>
+        <div class="footer">
+          <p>© 2025 Daraz Admin System</p>
+        </div>
+      </div>
+    </div>
+  </body>
+</html>

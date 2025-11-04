@@ -1,0 +1,46 @@
+import { Request, Response, NextFunction } from "express";
+import jwt, { JwtPayload } from "jsonwebtoken";
+import Admin from "../models/admin.model";
+import * as responseHandler from "../utils/helpers/response.helpers";
+
+interface AuthenticatedRequest extends Request {
+  admin?: any;
+}
+
+export const authenticationToken = async (
+  req: AuthenticatedRequest,
+  res: Response,
+  next: NextFunction
+) => {
+  try {
+    const authHeader = req.headers["authorization"];
+    const token = authHeader && authHeader.split(" ")[1];
+
+    if (!token) {
+      return responseHandler.errorResponse(res, "Access token is missing", 401);
+    }
+
+    const decoded = jwt.verify(token, process.env.MY_JWT_Secret!) as JwtPayload;
+
+    // ✅ FIX: Use decoded.userId instead of decoded.id
+    const user = await Admin.findById(decoded.userId).select("-password");
+    if (!user) {
+      return responseHandler.errorResponse(res, "User not found, Invalid Token", 403);
+    }
+
+    req.admin = user; // store full user if needed
+    next();
+  } catch (error: any) {
+    console.error("Error verifying token:", error);
+
+    if (error.name === "JsonWebTokenError") {
+      return responseHandler.errorResponse(res, "Invalid token", 403);
+    }
+
+    if (error.name === "TokenExpiredError") {
+      return responseHandler.errorResponse(res, "Token has expired", 403);
+    }
+
+    return responseHandler.errorResponse(res, "Authentication failed", 500);
+  }
+};

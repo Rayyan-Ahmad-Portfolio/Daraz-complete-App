@@ -1,0 +1,26 @@
+import { PERMISSIONS } from "./admin.permission";
+
+export const ROLE_PERMISSIONS = {
+  superadmin: [
+    ...PERMISSIONS.USERS,
+    ...PERMISSIONS.PRODUCTS,
+    ...PERMISSIONS.ORDERS,
+    ...PERMISSIONS.COUPONS,
+    ...PERMISSIONS.PAYMENTS,
+    ...PERMISSIONS.CATEGORIES,
+    ...PERMISSIONS.REPORTS,
+    ...PERMISSIONS.PERMISSIONS,
+    ...PERMISSIONS.ROLES,
+  ],
+  manager: [
+    ...PERMISSIONS.PRODUCTS,
+    ...PERMISSIONS.ORDERS,
+    ...PERMISSIONS.CATEGORIES,
+    ...PERMISSIONS.REPORTS,
+    PERMISSIONS.PERMISSIONS[0]
+  ],
+  support: [
+    PERMISSIONS.REPORTS[0], // only view_reports
+    PERMISSIONS.ORDERS[0],  // view_orders
+  ],
+};
