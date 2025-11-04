@@ -6,19 +6,24 @@ import { ZodError } from "zod";
 
 export const register = async (req: Request, res: Response) => {
   try {
-    const { name, email, password, phoneNumber, role: roleId } =
+    const { name, email, password, phoneNumber, role, address } =
       await validation.registerSchema.parseAsync(req.body);
-console.log("Incoming role:", roleId);
+
+    const roleNames = Array.isArray(role) ? role : [role];
+
+    const parsedAddress = address
+      ? await validation.addressSchema.parseAsync(address)
+      : undefined;
 
     const result = await UserAuthService.registerUser(
       name,
       email,
       password,
       phoneNumber,
-      roleId
+      roleNames,
+      parsedAddress
     );
 
-    // Success response
     return responseHandler.successResponse(
       res,
       "User registered successfully",
@@ -31,25 +36,17 @@ console.log("Incoming role:", roleId);
       return responseHandler.errorResponse(res, messages, 400);
     }
 
-    if (error.message === "User already exists") {
-      return responseHandler.errorResponse(res, error.message, 409);
-    }
-
-    console.error("Registration error:", error);
-    return responseHandler.errorResponse(
-      res,
-      error.message || "Internal server error",
-      500
-    );
+    console.error("❌ Registration error:", error);
+    return responseHandler.errorResponse(res, error.message, 500);
   }
 };
 
+
+
 export const login = async (req: Request, res: Response) => {
   try {
-    // Validate input
     const { email, password } = validation.loginSchema.parse(req.body);
 
-    // Authenticate
     const result = await UserAuthService.loginUser(email, password);
 
     return responseHandler.successResponse(

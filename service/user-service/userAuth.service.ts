@@ -2,19 +2,17 @@ import jwt from "jsonwebtoken";
 import User from "../../models/users.model";
 import Role from "../../models/role.model";
 import { sendEmail } from "../../utils/helpers/email.helper";
+import bcrypt from "bcrypt";
+
 
 const JWT_SECRET = process.env.MY_JWT_SECRET as string;
-
-if (!JWT_SECRET) {
-  console.error("❌ JWT_SECRET is not defined in environment variables");
-  process.exit(1);
-}
+if (!JWT_SECRET) throw new Error("❌ JWT_SECRET missing in .env");
 
 interface JwtPayload {
   userId: string;
   name: string;
   email: string;
-  role: string;
+  roles: string[];
 }
 
 export const registerUser = async (
@@ -22,43 +20,47 @@ export const registerUser = async (
   email: string,
   password: string,
   phoneNumber: string,
-  roleId: any
+  roleNames: string[] | string,
+  address?: {
+    street?: string| undefined;
+    city?: string | undefined;
+    province?: string | undefined;
+    postalCode?: string | undefined;
+  }
 ) => {
   const existingUser = await User.findOne({ email: email.trim() });
-  if (existingUser) throw new Error("User with this email already exists");
+  if (existingUser) throw new Error("User already exists");
 
-  const role = await Role.findById(roleId);
-  if (!role) throw new Error("Invalid role selected");
+  const roleArray = Array.isArray(roleNames) ? roleNames : [roleNames];
+  const roles = await Role.find({
+    name: { $in: roleArray.map((r) => new RegExp(`^${r}$`, "i")) },
+  });
+  if (!roles.length) throw new Error("Invalid roles provided");
 
   const user = new User({
     name: name.trim(),
     email: email.trim(),
     password,
-    role: role._id,
+    role: roles.map((r) => r._id),
     phoneNumber,
+    address,
   });
 
   await user.save();
 
-  await sendEmail(
-  user.email,                      // recipient
-  "Welcome to Daraz Admin System", // subject
-  "account-created.views.ejs",     // template file name (must include .ejs)
-  {
-    username: user.name,           // ✅ define this
-    email: user.email,             // ✅ define this
-    year: new Date().getFullYear() // optional footer info
-  }
-);
+  await sendEmail(user.email, "Welcome!", "account-created.views.ejs", {
+    username: user.name,
+    email: user.email,
+    year: new Date().getFullYear(),
+  });
 
-  // Generate JWT
   const token = jwt.sign(
     {
       userId: user._id.toString(),
       name: user.name,
       email: user.email,
-      role: role.name,
-    },
+      roles: roles.map((r) => r.name),
+    } as JwtPayload,
     JWT_SECRET,
     { expiresIn: "24h" }
   );
@@ -71,12 +73,13 @@ export const registerUser = async (
       id: user._id.toString(),
       name: user.name,
       email: user.email,
-      role: role.name,
+      roles: roles.map((r) => r.name),
+      address: user.address,
     },
   };
 };
 
-// 🔵 USER LOGIN
+
 export const loginUser = async (email: string, password: string) => {
   const user = await User.findOne({ email: email.trim() }).populate("role");
   if (!user) throw new Error("Invalid email or password");

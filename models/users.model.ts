@@ -2,10 +2,10 @@ import mongoose,{Document,Types, model} from "mongoose";
 import bcrypt from 'bcrypt';
 
 export interface IAddress {
-  street?: string;
-  city?: string;
-  province?: string;
-  postalCode?: string;
+   street?: string | undefined;
+  city?: string | undefined;
+  province?: string | undefined;
+  postalCode?: string | undefined;
 }
 
 export interface IUser extends Document {
@@ -34,11 +34,11 @@ const userSchema = new mongoose.Schema(
     email: { type: String, required: true, unique: true },
     password: { type: String, required: true },
     
-    role: {
+    role:[ {
       type: mongoose.Schema.Types.ObjectId,
       ref: "Role",
       required: true,
-    },
+    }],
 
     store: {
       type: mongoose.Schema.Types.ObjectId,
