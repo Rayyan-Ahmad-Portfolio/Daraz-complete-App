@@ -89,12 +89,13 @@ export const loginUser = async (email: string, password: string) => {
 
   const token = jwt.sign(
     {
-      userId: user._id.toString(),
+      userId: user._id,
+      
       name: user.name,
       email: user.email,
       role: (user.role as any).name,
     },
-    JWT_SECRET,
+    process.env.MY_JWT_SECRET!,
     { expiresIn: "24h" }
   );
 

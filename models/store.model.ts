@@ -1,4 +1,4 @@
-import mongoose,{Document,Types} from "mongoose";
+import mongoose,{Document,Types, model} from "mongoose";
 
 
 export interface IAddress {
@@ -73,4 +73,6 @@ const storeSchema = new mongoose.Schema(
   { timestamps: true }
 );
 
-export default mongoose.model("Store", storeSchema);
+
+export const Store = model<IStore>("Store", storeSchema);
+export default Store;

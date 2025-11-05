@@ -1,5 +1,5 @@
 import { Request, Response, NextFunction } from "express";
-import { ROLE_PERMISSIONS } from "../utils//constants/admin.role.constants";
+import { ROLE_PERMISSIONS } from "../../utils/constants/admin.role.constants";
 
 interface AuthenticatedRequest extends Request {
   admin?: any;

@@ -1,4 +1,4 @@
-import mongoose,{Document,Types} from "mongoose";
+import mongoose,{Document,Types,model} from "mongoose";
 
 export interface IRole extends Document {
   name: "Buyer" | "Store Owner" | "Store Manager";
@@ -24,4 +24,6 @@ const roleSchema = new mongoose.Schema({
   timestamps: true
 });
 
-export default mongoose.model("Role", roleSchema);
+
+export const Role = model<IRole>("Role", roleSchema);
+export default Role;

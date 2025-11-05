@@ -1,6 +1,6 @@
 import express from "express";
 import {createRole , getAllRoles } from "../../controller/role-controller/role.controller";
-import { authorize } from "../../middleware/rbac.middleware";
+import { authorize } from "../../middleware/admin-middlewares/rbac.middleware";
 
 const router = express.Router();
 

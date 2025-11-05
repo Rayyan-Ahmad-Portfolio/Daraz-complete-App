@@ -2,7 +2,7 @@ import express from "express";
 import * as AuthController from "../../controller/admin-controller/admin.auth.controller";
 import PermissionRoutes from "./admin.permission.routes";
 import RoleRoutes from "./admin.role.routes";
-import { authenticationToken } from "../../middleware/auth.middleware";
+import { authenticationToken } from "../../middleware/admin-middlewares/auth.middleware";
 import { requestPasswordReset, resetPasswordWithOTP } from "../../controller/admin-controller/admin.auth.controller"
 
 

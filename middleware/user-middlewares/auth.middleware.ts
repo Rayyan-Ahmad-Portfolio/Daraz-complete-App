@@ -1,13 +1,13 @@
 import { Request, Response, NextFunction } from "express";
 import jwt, { JwtPayload } from "jsonwebtoken";
-import Admin from "../models/admin.model";
-import * as responseHandler from "../utils/helpers/response.helpers";
+import User from "../../models/users.model";
+import * as responseHandler from "../../utils/helpers/response.helpers";
 
 interface AuthenticatedRequest extends Request {
-  admin?: any;
+  user?: any;
 }
 
-export const authenticationToken = async (
+export const authenticator = async (
   req: AuthenticatedRequest,
   res: Response,
   next: NextFunction
@@ -21,14 +21,12 @@ export const authenticationToken = async (
     }
 
     const decoded = jwt.verify(token, process.env.MY_JWT_Secret!) as JwtPayload;
-
-    // ✅ FIX: Use decoded.userId instead of decoded.id
-    const user = await Admin.findById(decoded.userId).select("-password");
+    const user = await User.findById(decoded.userId).select("-password");
     if (!user) {
       return responseHandler.errorResponse(res, "User not found, Invalid Token", 403);
     }
 
-    req.admin = user; // store full user if needed
+    req.user = user; 
     next();
   } catch (error: any) {
     console.error("Error verifying token:", error);

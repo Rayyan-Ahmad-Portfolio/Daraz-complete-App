@@ -1,6 +1,6 @@
 import express from "express";
 import { createPermission, getPermissions,updatePermission , deletePermission} from "../../controller/permission-controller/permission.controller";
-import { authorize } from "../../middleware/rbac.middleware";
+import { authorize } from "../../middleware/admin-middlewares/rbac.middleware";
 import { PERMISSIONS } from "../../utils/constants/admin.permission";
 
 const router = express.Router();
