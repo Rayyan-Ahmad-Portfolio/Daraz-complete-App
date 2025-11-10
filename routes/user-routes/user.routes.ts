@@ -2,6 +2,7 @@ import express from 'express';
 import * as UserAuthController from '../../controller/user-folder/user.auth.controller';
 import StoreRoutes from './store.routes';
 import { authenticator } from "../../middleware/user-middlewares/auth.middleware";
+import ProductRoutes from './product.routes';
 
 const router = express.Router();
 
@@ -11,5 +12,6 @@ router.post("/login", UserAuthController.login);
 
 router.use(authenticator);
 router.use("/store", StoreRoutes);
+router.use("/product", ProductRoutes);
 
 export default router;

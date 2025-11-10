@@ -20,7 +20,7 @@ export const ROLE_PERMISSIONS = {
     PERMISSIONS.PERMISSIONS[0]
   ],
   support: [
-    PERMISSIONS.REPORTS[0], // only view_reports
-    PERMISSIONS.ORDERS[0],  // view_orders
+    PERMISSIONS.REPORTS[0], 
+    PERMISSIONS.ORDERS[0],  
   ],
 };

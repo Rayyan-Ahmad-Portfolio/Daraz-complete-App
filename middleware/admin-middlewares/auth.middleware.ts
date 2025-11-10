@@ -22,12 +22,12 @@ export const authenticationToken = async (
 
     const decoded = jwt.verify(token, process.env.MY_JWT_Secret!) as JwtPayload;
 
-    const user = await Admin.findById(decoded.userId).select("-password");
-    if (!user) {
+    const admin = await Admin.findById(decoded.userId).select("-password");
+    if (!admin) {
       return responseHandler.errorResponse(res, "User not found, Invalid Token", 403);
     }
 
-    req.admin = user; 
+req.admin = admin;
     next();
   } catch (error: any) {
     console.error("Error verifying token:", error);

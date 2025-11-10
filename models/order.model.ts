@@ -40,7 +40,7 @@ const orderSchema = new mongoose.Schema({
   ],
   shippingAddress: {
     type: mongoose.Schema.Types.ObjectId,
-    ref: "UserAddress",
+    ref: "shipping",
     required: true
   },
   totalAmount: { type: Number, required: true },
