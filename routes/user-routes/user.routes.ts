@@ -3,15 +3,16 @@ import * as UserAuthController from '../../controller/user-folder/user.auth.cont
 import StoreRoutes from './store.routes';
 import { authenticator } from "../../middleware/user-middlewares/auth.middleware";
 import ProductRoutes from './product.routes';
+import InventoryRoutes from './inventory.routes';
 
 const router = express.Router();
 
-//Auth Routes
 router.post("/register", UserAuthController.register);
 router.post("/login", UserAuthController.login);
 
 router.use(authenticator);
 router.use("/store", StoreRoutes);
 router.use("/product", ProductRoutes);
+router.use("/inventory", InventoryRoutes);
 
 export default router;

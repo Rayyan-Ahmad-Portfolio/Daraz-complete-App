@@ -1,4 +1,4 @@
-import mongoose,{Document,Types} from "mongoose";
+import mongoose,{Document,Types, model} from "mongoose";
 
 export interface IProduct extends Document {
   _id: Types.ObjectId;
@@ -12,9 +12,8 @@ export interface IProduct extends Document {
   inventory: Types.ObjectId;  
 
   rating?: number;            
-  approvedBy?: Types.ObjectId; 
   reviews?: Types.ObjectId[];
-  orders?: Types.ObjectId[];  
+    
 
   createdAt?: Date;
   updatedAt?: Date;
@@ -43,10 +42,7 @@ const productSchema = new mongoose.Schema(
     },
     rating: { type: Number, default: 0 },
     createdAt: { type: Date, default: Date.now },
-    approvedBy: {
-    type: mongoose.Schema.Types.ObjectId,
-    ref: "Admin",
-  },
+    updatedAt: { type: Date, default: Date.now },
   },
   {
     toJSON: { virtuals: true },
@@ -68,4 +64,5 @@ productSchema.virtual("orders", {
   justOne: false,
 });
 
-export default mongoose.model("Product", productSchema);
+export const Product = model<IProduct>("Product", productSchema);
+export default Product;

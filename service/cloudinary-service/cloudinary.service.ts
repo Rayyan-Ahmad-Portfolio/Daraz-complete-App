@@ -3,7 +3,6 @@ import fs from "fs";
 import path from "path";
 import sharp from "sharp";
 
-
 export const uploadToCloudinary = async (localFilePath: string): Promise<string | null> => {
   try {
     if (!fs.existsSync(localFilePath)) {
@@ -22,10 +21,14 @@ export const uploadToCloudinary = async (localFilePath: string): Promise<string 
     } else {
       const jpegPath = path.join(
         path.dirname(localFilePath),
-        `${path.parse(localFilePath).name}.jpeg`
+        `${path.parse(localFilePath).name}-${Date.now()}.jpeg` // Unique temp name
       );
 
-      await sharp(localFilePath).jpeg({ quality: 80 }).toFile(jpegPath);
+      if (ext !== ".jpeg" && ext !== ".jpg") {
+        await sharp(localFilePath).jpeg({ quality: 80 }).toFile(jpegPath);
+      } else {
+        fs.copyFileSync(localFilePath, jpegPath);
+      }
 
       result = await cloudinary.uploader.upload(jpegPath, {
         resource_type: "image",
@@ -44,7 +47,6 @@ export const uploadToCloudinary = async (localFilePath: string): Promise<string 
     return null;
   }
 };
-
 
 export const uploadMultipleToCloudinary = async (filePaths: string[]): Promise<string[]> => {
   const uploadedUrls: string[] = [];

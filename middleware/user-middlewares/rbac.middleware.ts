@@ -6,7 +6,6 @@ interface AuthenticatedRequest extends Request {
   user?: any;
 }
 
-
 export const authorizeUser =
   (requiredPermissions: string[]) =>
   async (req: AuthenticatedRequest, res: Response, next: NextFunction) => {
@@ -17,7 +16,7 @@ export const authorizeUser =
           .status(401)
           .json({ success: false, message: "Unauthorized - no user info" });
 
-   
+      // Populate role -> permission
       const populatedUser = await user.populate({
         path: "role",
         populate: {
@@ -26,17 +25,21 @@ export const authorizeUser =
         },
       });
 
+      // Build all user permissions in "Module:Action" format
       const userPermissions: string[] = [];
-      populatedUser.role.forEach((r: any) => {
-        r.permission.forEach((p: any) => {
-   
-          p.actions.forEach((action: string) => {
-            userPermissions.push(`${p.module}:${action}`);
+
+      populatedUser.role.forEach((role: any) => {
+        role.permission.forEach((perm: any) => {
+          perm.actions.forEach((action: string) => {
+            userPermissions.push(`${perm.module}:${action}`);
           });
         });
       });
 
-  
+      console.log("User permissions:", userPermissions);
+      console.log("Required permissions:", requiredPermissions);
+
+      // Check if the user has all required permissions
       const hasPermission = requiredPermissions.every((perm) =>
         userPermissions.includes(perm)
       );

@@ -8,6 +8,7 @@ export interface IWarehouseLocation {
 export interface IInventory extends Document {
   _id: Types.ObjectId;
   product: Types.ObjectId;
+  store: Types.ObjectId;
   stock: number;
   sold?: number;
   warehouseLocation: IWarehouseLocation;
@@ -22,7 +23,11 @@ const inventorySchema = new mongoose.Schema(
       ref: "Product",
       required: true,
     },
-
+    store: {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: "Store",
+      required: true,
+    },
     stock: { type: Number, required: true, default: 0 },
     sold: { type: Number, default: 0 },
     warehouseLocation: {
