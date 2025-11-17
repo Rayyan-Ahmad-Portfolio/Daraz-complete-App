@@ -4,6 +4,7 @@ import { authenticator } from "../../middleware/user-middlewares/auth.middleware
 import { authorizeUser } from "../../middleware/user-middlewares/rbac.middleware";
 
 const router = Router();
+router.use(authenticator);
 
 
 router.post("/create", authorizeUser(["Inventory:create"]), inventoryController.createInventory);

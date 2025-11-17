@@ -13,6 +13,16 @@ export const authenticator = async (
   next: NextFunction
 ) => {
   try {
+    const jwtSecret = process.env.MY_JWT_Secret?.trim();
+    if (!jwtSecret) {
+      console.error("JWT_Secret is not configured");
+      return responseHandler.errorResponse(res, "Server configuration error", 500);
+    }
+
+    if (jwtSecret.length < 32) {
+      console.warn("Warning: JWT_Secret is too short. Minimum 32 characters recommended for HS256.");
+    }
+
     const authHeader = req.headers["authorization"];
     const token = authHeader && authHeader.split(" ")[1];
 
@@ -20,7 +30,7 @@ export const authenticator = async (
       return responseHandler.errorResponse(res, "Access token is missing", 401);
     }
 
-    const decoded = jwt.verify(token, process.env.MY_JWT_Secret!) as JwtPayload;
+    const decoded = jwt.verify(token, jwtSecret) as JwtPayload;
     const user = await User.findById(decoded.userId).select("-password");
     if (!user) {
       return responseHandler.errorResponse(res, "User not found, Invalid Token", 403);
@@ -29,7 +39,7 @@ export const authenticator = async (
     req.user = user; 
     next();
   } catch (error: any) {
-    console.error("Error verifying token:", error);
+    console.error("Error verifying token:", error.message);
 
     if (error.name === "JsonWebTokenError") {
       return responseHandler.errorResponse(res, "Invalid token", 403);
